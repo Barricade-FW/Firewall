@@ -1,9 +1,1 @@
-interface = "ens18";
-updatetime = 15;
-
-filters = (
-    {
-        enabled = true,
-        action = 1
-    }
-);
+backbone = "127.0.0.1";
