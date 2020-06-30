@@ -142,7 +142,7 @@ int EncryptAndSend(int sockfd, unsigned char *buff, int len, unsigned char *key,
     }
 
     // Increment counter.
-    *counter++;
+    counter++;
 
     return 0;
 }
