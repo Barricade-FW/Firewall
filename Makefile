@@ -1,6 +1,6 @@
 CC = clang
 
-objects += src/config.o src/xdpfw_loader.o
+objects += src/config.o src/client.c src/xdpfw_loader.o
 
 libbpf_static_objects += libbpf/src/staticobjs/bpf.o libbpf/src/staticobjs/btf.o libbpf/src/staticobjs/libbpf_errno.o libbpf/src/staticobjs/libbpf_probes.o
 libbpf_static_objects += libbpf/src/staticobjs/libbpf.o libbpf/src/staticobjs/netlink.o libbpf/src/staticobjs/nlattr.o libbpf/src/staticobjs/str_error.o
