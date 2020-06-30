@@ -61,7 +61,7 @@ void *TCPHandle(void *data)
 
         // Do whatever with data...
 
-        // Sleep for 500 msecs for prevent possible loop that'd consume CPU.
+        // Sleep for 500 msecs to prevent possible loop that'd consume CPU.
         usleep(500);
     }
 
