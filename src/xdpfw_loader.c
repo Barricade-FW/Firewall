@@ -8,6 +8,7 @@
 #include <time.h>
 #include <getopt.h>
 #include <sys/resource.h>
+#include <pthread.h>
 
 #include <net/if.h>
 #include <linux/if_link.h>

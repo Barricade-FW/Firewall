@@ -10,7 +10,7 @@ LDFLAGS += -lconfig -lelf -lz
 
 all: xdpfw_loader xdpfw_filter
 xdpfw_loader: libbpf $(objects)
-	clang $(LDFLAGS) -o xdpfw $(libbpf_static_objects) $(objects) -lsodium
+	clang $(LDFLAGS) -o xdpfw $(libbpf_static_objects) $(objects) -lsodium -lpthread
 xdpfw_filter: src/xdpfw_kern.o
 	clang -D__BPF__ -Wall -Wextra -O2 -emit-llvm -c src/xdpfw_kern.c -o src/xdpfw_kern.bc
 	llc -march=bpf -filetype=obj src/xdpfw_kern.bc -o src/xdpfw_kern.o
