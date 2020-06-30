@@ -12,7 +12,7 @@ FILE *file;
 
 void SetConfigDefaults(struct config_map *cfg)
 {
-    cfg->updateTime = 0;
+    cfg->updatetime = 0;
     cfg->interface = "eth0";
     cfg->nostats = 0;
 
@@ -21,8 +21,8 @@ void SetConfigDefaults(struct config_map *cfg)
         cfg->filters[i].id = 0;
         cfg->filters[i].enabled = 0;
         cfg->filters[i].action = 0;
-        cfg->filters[i].srcIP = 0;
-        cfg->filters[i].dstIP = 0;
+        cfg->filters[i].srcip = 0;
+        cfg->filters[i].dstip = 0;
 
         cfg->filters[i].do_min_len = 0;
         cfg->filters[i].min_len = 0;
@@ -45,7 +45,7 @@ void SetConfigDefaults(struct config_map *cfg)
         cfg->filters[i].do_bps = 0;
         cfg->filters[i].bps = 0;
 
-        cfg->filters[i].blockTime = 1;
+        cfg->filters[i].blocktime = 1;
         
         cfg->filters[i].tcpopts.enabled = 0;
         cfg->filters[i].tcpopts.do_dport = 0;
@@ -64,17 +64,10 @@ void SetConfigDefaults(struct config_map *cfg)
         cfg->filters[i].icmpopts.enabled = 0;
         cfg->filters[i].icmpopts.do_code = 0;
         cfg->filters[i].icmpopts.do_type = 0;
-
-        for (uint16_t j = 0; j < MAX_PAYLOAD_LENGTH - 1; j++)
-        {
-            cfg->filters[i].payloadMatch[j] = 0;
-        }
-
-        cfg->filters[i].payloadLen = 0;
     }
 }
 
-int OpenConfig(const char *FileName)
+int OpenConfig(const char *filename)
 {
     // Close any existing files.
     if (file != NULL)
@@ -84,7 +77,7 @@ int OpenConfig(const char *FileName)
         file = NULL;
     }
 
-    file = fopen(FileName, "r");
+    file = fopen(filename, "r");
 
     if (file == NULL)
     {
@@ -111,7 +104,7 @@ int ReadConfig(struct config_map *cfg)
     // Attempt to read the config.
     if (config_read(&conf, file) == CONFIG_FALSE)
     {
-        fprintf(stderr, "Error from LibConfig when reading file - %s (Line %d)\n\n", config_error_text(&conf), config_error_line(&conf));
+        fprintf(stderr, "Error from LibConfig when reading file :: %s (Line %d).\n\n", config_error_text(&conf), config_error_line(&conf));
 
         config_destroy(&conf);
 
@@ -123,7 +116,7 @@ int ReadConfig(struct config_map *cfg)
 
     if (!config_lookup_string(&conf, "interface", &interface))
     {
-        fprintf(stderr, "Error from LibConfig when reading 'interface' setting - %s\n\n", config_error_text(&conf));
+        fprintf(stderr, "Error from LibConfig when reading 'interface' setting :: %s.\n\n", config_error_text(&conf));
         
         config_destroy(&conf);
 
@@ -133,18 +126,18 @@ int ReadConfig(struct config_map *cfg)
     cfg->interface = strdup(interface);
 
     // Get auto update time.
-    int updateTime;
+    int updatetime;
 
-    if (!config_lookup_int(&conf, "updatetime", &updateTime))
+    if (!config_lookup_int(&conf, "updatetime", &updatetime))
     {
-        fprintf(stderr, "Error from LibConfig when reading 'updatetime' setting - %s\n\n", config_error_text(&conf));
+        fprintf(stderr, "Error from LibConfig when reading 'updatetime' setting :: %s.\n\n", config_error_text(&conf));
         
         config_destroy(&conf);
 
         return 1;    
     }
 
-    cfg->updateTime = updateTime;
+    cfg->updatetime = updatetime;
 
     // Get no stats.
     int nostats;
@@ -160,7 +153,7 @@ int ReadConfig(struct config_map *cfg)
     // Check if filters map is valid. If not, not a biggie since they aren't required.
     if (setting == NULL)
     {
-        fprintf(stderr, "Error from LibConfig when reading 'filters' array - %s\n\n", config_error_text(&conf));
+        fprintf(stderr, "Error from LibConfig when reading 'filters' array :: %s.\n\n", config_error_text(&conf));
         
         config_destroy(&conf);
 
@@ -180,7 +173,7 @@ int ReadConfig(struct config_map *cfg)
         if (config_setting_lookup_bool(filter, "enabled",  &enabled) == CONFIG_FALSE)
         {
             // Print error and stop from existing this rule any further.
-            fprintf(stderr, "Error from LibConfig when reading 'enabled' setting from filters array #%d. Error - %s\n\n", filters, config_error_text(&conf));
+            fprintf(stderr, "Error from LibConfig when reading 'enabled' setting from filters array #%d :: %s.\n\n", filters, config_error_text(&conf));
 
             continue;
         }
@@ -192,7 +185,7 @@ int ReadConfig(struct config_map *cfg)
 
         if (config_setting_lookup_int(filter, "action", &action) == CONFIG_FALSE)
         {
-            fprintf(stderr, "Error from LibConfig when reading 'action' setting from filters array #%d. Error - %s\n\n", filters, config_error_text(&conf));
+            fprintf(stderr, "Error from LibConfig when reading 'action' setting from filters array #%d :: %s.\n\n", filters, config_error_text(&conf));
 
             cfg->filters[i].enabled = 0;
 
@@ -202,19 +195,19 @@ int ReadConfig(struct config_map *cfg)
         cfg->filters[i].action = action;
 
         // Source IP (not required).
-        const char *sIP;
+        const char *srcip;
 
-        if (config_setting_lookup_string(filter, "srcip", &sIP))
+        if (config_setting_lookup_string(filter, "srcip", &srcip))
         {
-            cfg->filters[i].srcIP = inet_addr(sIP);
+            cfg->filters[i].srcip = inet_addr(srcip);
         }
 
         // Destination IP (not required).
-        const char *dIP;
+        const char *dstip;
 
-        if (config_setting_lookup_string(filter, "dstip", &dIP))
+        if (config_setting_lookup_string(filter, "dstip", &dstip))
         {
-            cfg->filters[i].dstIP = inet_addr(dIP);
+            cfg->filters[i].dstip = inet_addr(dstip);
         }
 
         // Minimum TTL (not required).
@@ -285,34 +278,11 @@ int ReadConfig(struct config_map *cfg)
 
         if (config_setting_lookup_int64(filter, "blocktime", &blocktime))
         {
-            cfg->filters[i].blockTime = blocktime;
+            cfg->filters[i].blocktime = blocktime;
         }
         else
         {
-            cfg->filters[i].blockTime = 1;
-        }
-
-        // Payload match.
-        const char *payload;
-
-        if (config_setting_lookup_string(filter, "payloadmatch", &payload))
-        {
-            // We need to split the string and scan everything into the uint8_t payload.
-            char *split;
-
-            char *str = malloc((strlen(payload) + 1) * sizeof(char));
-            strcpy(str, payload);
-
-            split = strtok(str, " ");
-
-            while (split != NULL)
-            {
-                sscanf(split, "%2hhx", &cfg->filters[i].payloadMatch[cfg->filters[i].payloadLen]);
-
-                cfg->filters[i].payloadLen++;
-
-                split = strtok(NULL, " ");
-            }
+            cfg->filters[i].blocktime = 1;
         }
 
         // Check for TCP options.

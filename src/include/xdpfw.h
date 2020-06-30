@@ -68,8 +68,8 @@ struct filter
 
     uint8_t action;
 
-    uint32_t srcIP;
-    uint32_t dstIP;
+    uint32_t srcip;
+    uint32_t dstip;
 
     unsigned int do_min_ttl : 1;
     uint8_t min_ttl;
@@ -92,10 +92,7 @@ struct filter
     unsigned int do_bps : 1;
     uint64_t bps;
 
-    uint64_t blockTime;
-
-    uint8_t payloadMatch[MAX_PAYLOAD_LENGTH];
-    uint16_t payloadLen;
+    uint64_t blocktime;
 
     struct tcpopts tcpopts;
     struct udpopts udpopts;

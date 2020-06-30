@@ -205,7 +205,7 @@ int xdp_prog_main(struct xdp_md *ctx)
     struct udphdr *udph;
     struct icmphdr *icmph;
     
-    uint16_t l4headerLen = 0;
+    uint16_t l4headerlen = 0;
 
     // Check protocol.
     if (iph->protocol == IPPROTO_TCP)
@@ -220,7 +220,7 @@ int xdp_prog_main(struct xdp_md *ctx)
         }
 
         // Set L4 Header length.
-        l4headerLen = sizeof(struct tcphdr);
+        l4headerlen = sizeof(struct tcphdr);
     }
     else if (iph->protocol == IPPROTO_UDP)
     {
@@ -234,7 +234,7 @@ int xdp_prog_main(struct xdp_md *ctx)
         }
 
         // Set L4 Header length.
-        l4headerLen = sizeof(struct udphdr);
+        l4headerlen = sizeof(struct udphdr);
     }
     else if (iph->protocol == IPPROTO_ICMP)
     {
@@ -248,7 +248,7 @@ int xdp_prog_main(struct xdp_md *ctx)
         }
 
         // Set L4 Header length.
-        l4headerLen = sizeof(struct icmphdr);
+        l4headerlen = sizeof(struct icmphdr);
     }
     
     for (uint8_t i = 0; i < MAX_FILTERS; i++)
@@ -266,13 +266,13 @@ int xdp_prog_main(struct xdp_md *ctx)
         }
 
         // Source address.
-        if (filter[i]->srcIP != 0 && iph->saddr != filter[i]->srcIP)
+        if (filter[i]->srcip != 0 && iph->saddr != filter[i]->srcip)
         {
             continue;
         }
 
         // Destination address.
-        if (filter[i]->dstIP != 0 && iph->daddr != filter[i]->dstIP)
+        if (filter[i]->dstip != 0 && iph->daddr != filter[i]->dstip)
         {
             continue;
         }
@@ -332,54 +332,6 @@ int xdp_prog_main(struct xdp_md *ctx)
         {
             continue;
         }
-
-        // Payload matching.
-        /*
-        if (filter[i]->payloadLen > 0)
-        {
-            unsigned int offset = sizeof(struct ethhdr) + (iph->ihl * 4) + l4headerLen;
-            void *pos;
-            unsigned int j;
-            uint8_t *ptr;
-
-            pos = data;
-
-            int cont = 1;
-
-            for (j = 0; j < MAX_PAYLOAD_LENGTH; j++)
-            {
-                if ((j + 1) > filter[i]->payloadLen)
-                {
-                    goto out;
-                }
-
-                if ((pos + offset) + 1 > data_end)
-                {
-                    goto out;
-                }
-                
-                ptr = pos + offset;
-
-                if (*ptr == filter[i]->payloadMatch[j])
-                {
-                    offset++;
-                    
-                    continue;
-                }
-                
-                cont = 0;
-                goto exitloop;
-            }
-
-            exitloop:
-            if (!cont)
-            {
-                continue;
-            }
-        }
-
-        out:
-        */
 
         // Do TCP options.
         if (iph->protocol == IPPROTO_TCP && filter[i]->tcpopts.enabled)
@@ -468,7 +420,7 @@ int xdp_prog_main(struct xdp_md *ctx)
 
         matched = 1;
         action = filter[i]->action;
-        blocktime = filter[i]->blockTime;
+        blocktime = filter[i]->blocktime;
 
         break;
     }
@@ -499,9 +451,9 @@ int xdp_prog_main(struct xdp_md *ctx)
         // Before dropping, update the blacklist map.
         if (blocktime > 0)
         {
-            uint64_t newTime = now + (blocktime * 1000000000);
+            uint64_t newtime = now + (blocktime * 1000000000);
 
-            bpf_map_update_elem(&ip_blacklist_map, &iph->saddr, &newTime, BPF_ANY);
+            bpf_map_update_elem(&ip_blacklist_map, &iph->saddr, &newtime, BPF_ANY);
         }
 
         return XDP_DROP;
