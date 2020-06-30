@@ -110,7 +110,7 @@ void CheckSocket(int *sockfd)
     }
 }
 
-int EncryptAndSend(int sockfd, unsigned char *buff, unsigned char *key, uint64_t *counter, uint8_t header)
+int EncryptAndSend(int sockfd, unsigned char *buff, int len, unsigned char *key, uint64_t *counter, uint8_t header)
 {
     unsigned char hash[crypto_generichash_BYTES];
     unsigned char nonce[crypto_aead_chacha20poly1305_IETF_NPUBBYTES];
@@ -119,7 +119,7 @@ int EncryptAndSend(int sockfd, unsigned char *buff, unsigned char *key, uint64_t
     unsigned long long ctextlen;
 
     // Size is sizeof(ctext) + sizeof(uint64_t).
-    unsigned char tosend[crypto_aead_chacha20poly1305_IETF_ABYTES + sizeof(buff) + sizeof(uint64_t)];
+    unsigned char tosend[crypto_aead_chacha20poly1305_IETF_ABYTES + sizeof(buff) + sizeof(uint8_t) + sizeof(uint64_t)];
 
     // Copy counter integer to string.
     memcpy(scounter, counter, sizeof(uint64_t));
@@ -136,7 +136,7 @@ int EncryptAndSend(int sockfd, unsigned char *buff, unsigned char *key, uint64_t
     memcpy(nonce, hash, 12);
     
     // Encrypt the message and store in ctext.
-    crypto_aead_chacha20poly1305_ietf_encrypt(ctext, &ctextlen, buff, strlen(buff), NULL, 0, NULL, nonce, key);
+    crypto_aead_chacha20poly1305_ietf_encrypt(ctext, &ctextlen, buff, len, NULL, 0, NULL, nonce, key);
 
     // Check to ensure we can decrypt the message before sending.
     unsigned char decrypted[2048];
@@ -166,6 +166,56 @@ int EncryptAndSend(int sockfd, unsigned char *buff, unsigned char *key, uint64_t
     if (write(sockfd, tosend, ctextlen + sizeof(uint64_t)) < 1)
     {
         fprintf(stderr, "Error sending packet on socket :: %s\n", strerror(errno));
+
+        return 1;
+    }
+
+    // Increment counter.
+    *counter++;
+
+    return 0;
+}
+
+int Decrypt(unsigned char *msg, int len, unsigned char *out, unsigned long long *dlen, unsigned char *key, uint8_t *header)
+{
+    // Check length and ensure it's at least 9 bytes (header + counter).
+    if (len < 9)
+    {
+        return 1;
+    }
+
+    unsigned char ctext[crypto_aead_chacha20poly1305_IETF_ABYTES + MAX_SEND_LENGTH];
+    unsigned char hash[crypto_generichash_BYTES];
+    unsigned char nonce[crypto_aead_chacha20poly1305_IETF_NPUBBYTES];
+    uint64_t counter;
+
+    // First get the header and assign it to the header pointer for use outside of function if needed.
+    uint8_t *headerpos = msg;
+    memcpy(header, headerpos, 1);
+
+    // Now get counter.
+    uint64_t *counterpos = msg + sizeof(uint8_t);
+    memcpy(&counter, counterpos, sizeof(uint64_t));
+
+    // Store rest of message as cipher text.
+    unsigned char *ctextpos = msg + sizeof(uint8_t) + sizeof(uint64_t);
+    memcpy(ctext, ctextpos, (len - sizeof(uint8_t) - sizeof(uint64_t)));
+
+    // Generate hash based off of counter in SHA256.
+    if (crypto_hash_sha256(hash, (unsigned char *)&counter, sizeof(uint64_t)) != 0)
+    {
+        fprintf(stderr, "Unable to generate hash for nonce.\n");
+
+        return 1;
+    }
+
+    // Copy first 12 bytes to nonce.
+    memcpy(nonce, hash, 12);
+
+    // Attempt to decrypt.
+    if (crypto_aead_chacha20poly1305_ietf_decrypt(out, dlen, NULL, ctext, (len - sizeof(uint8_t) - sizeof(uint64_t)), NULL, 0, nonce, key) != 0)
+    {
+        fprintf(stderr, "Unable to decrypt message with header %02x.\n", header);
 
         return 1;
     }

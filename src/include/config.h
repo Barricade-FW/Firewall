@@ -6,6 +6,7 @@ struct config_map
 {
     char *interface;
     char *serverip;
+    unsigned char *key;
     uint16_t serverport;
     uint16_t updatetime;
     unsigned int usecache : 1;
