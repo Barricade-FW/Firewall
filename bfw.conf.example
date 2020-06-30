@@ -1,5 +1,6 @@
 {
     "serverip": "127.0.0.1",
     "serverport": 3020,
-    "usecache": false
+    "usecache": false,
+    "key": "VGhpc2lzanVzdGFzaW1wbGV0ZXN0Zm9yYmFzZTY0ZW5jcnlwdGlvbg=="
 }
