@@ -66,7 +66,7 @@ void CheckSocket(int *sockfd)
     uint8_t msg = 0x60;
 
     // Attempt to send a heartbeat (0x60).
-    if (send(*sockfd, msg, 1, 0) < 1)
+    if (send(*sockfd, &msg, 1, 0) < 1)
     {
         *sockfd = -1;
 
