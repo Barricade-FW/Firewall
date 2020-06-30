@@ -126,11 +126,11 @@ int EncryptAndSend(int sockfd, unsigned char *buff, int len, unsigned char *key,
     memcpy(headerpos, &header, 1);
 
     // Copy counter to tosend (8 bytes).
-    char *sendcounter = tosend + 1;
+    uint64_t *sendcounter = (uint64_t *)tosend + sizeof(uint8_t);
     memcpy(sendcounter, counter, sizeof(uint64_t));
 
     // Copy cipher text to rest of string.
-    char *ctextptr = (tosend + 1) + sizeof(uint64_t);
+    unsigned char *ctextptr = (tosend + 1) + sizeof(uint64_t);
     memcpy(ctextptr, ctext, ctextlen);
 
     // Send message.
