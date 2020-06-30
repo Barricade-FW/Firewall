@@ -58,7 +58,7 @@ int SetupSocket(struct config_map *cfg)
 
 void CheckSocket(int *sockfd)
 {
-    if (sockfd < 1)
+    if (*sockfd < 1)
     {
         return;
     }
@@ -66,18 +66,18 @@ void CheckSocket(int *sockfd)
     uint8_t msg = 0x60;
 
     // Attempt to send a heartbeat (0x60).
-    if (send(sockfd, msg, 1, 0) < 1)
+    if (send(*sockfd, msg, 1, 0) < 1)
     {
-        sockfd = -1;
+        *sockfd = -1;
 
         return;
     }
     // Wait for response.
     char resp[256];
 
-    if (recv(sockfd, resp, sizeof(resp), 0) < 1)
+    if (recv(*sockfd, resp, sizeof(resp), 0) < 1)
     {
-        sockfd = -1;
+        *sockfd = -1;
     }
 }
 
