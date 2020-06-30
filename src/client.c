@@ -186,7 +186,7 @@ int Decrypt(unsigned char *msg, int len, unsigned char *out, unsigned long long 
     // Attempt to decrypt.
     if (crypto_aead_chacha20poly1305_ietf_decrypt(out, dlen, NULL, ctext, (len - sizeof(uint8_t) - sizeof(uint64_t)), NULL, 0, nonce, key) != 0)
     {
-        fprintf(stderr, "Unable to decrypt message with header %02x.\n", header);
+        fprintf(stderr, "Unable to decrypt message with header %02x.\n", *header);
 
         return 1;
     }
