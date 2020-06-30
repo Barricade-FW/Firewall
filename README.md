@@ -1,23 +1,31 @@
-# Barricade Firewall
+# Barricade Firewall (NOT FINISHED)
 ## Description
-An XDP Firewall that connects to a backbone web server running [this](https://github.com/Barricade-FW/Web-Server) application.
+An XDP Firewall that connects to a backbone running [this](https://github.com/Barricade-FW/Web-Server) application.
 
 ## Command Line Usage
 The following command line arguments are supported:
 
-* `--config -c` => Location to config file. Default => **/etc/xdpfw/xdpfw.conf**.
+* `--config -c` => Location to config file. Default => **/etc/bfw/bfw.conf**.
 * `--list -l` => List all filtering rules currently implemented.
 * `--help -h` => Print help menu for command line options.
 
 ## Configuration File Options
 ### Main
-* `backbone` => The IP/hostname to the backbone web server (running [this](https://github.com/Barricade-FW/Web-Server) application).
+* `serverip` => The IP/hostname to the backbone server (running [this](https://github.com/Barricade-FW/Web-Server) application).
+* `serverport` => The port to the backbone server.
+* `usecache` => If we fail to connect to the backbone, use a local cached config file instead (default false).
+* `key` => Base64 key generated from backbone.
 
 ## Configuration Example
 Here's an example of a config:
 
 ```
-backbone = "127.0.0.1";
+{
+    "serverip": "127.0.0.1",
+    "serverport": 3020,
+    "usecache": false,
+    "key": "VGhpc2lzanVzdGFzaW1wbGV0ZXN0Zm9yYmFzZTY0ZW5jcnlwdGlvbg=="
+}
 ```
 
 ## Building
@@ -47,7 +55,7 @@ back-edge from insn 113 to 100
 
 libbpf: -- END LOG --
 libbpf: failed to load program 'xdp_prog'
-libbpf: failed to load object '/etc/xdpfw/xdpfw_kern.o'
+libbpf: failed to load object '/etc/bfw/bfw_xdp.o'
 ```
 
 ## Credits
