@@ -113,4 +113,6 @@ struct bfw_ip_stats
     uint64_t tracking;
 };
 
+void *TCPHandle(void *data);
+
 #endif

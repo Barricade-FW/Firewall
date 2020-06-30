@@ -429,6 +429,11 @@ int main(int argc, char *argv[])
     // Signal.
     signal(SIGINT, SignalHndl);
 
+    // Spawn thread to handle TCP.
+    pthread_t pid;
+
+    pthread_create(&pid, NULL, TCPHandle, (void *)cfg);
+
     while (cont)
     {
         // Get current time.

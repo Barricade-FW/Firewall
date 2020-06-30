@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <inttypes.h>
+#include <pthread.h>
+#include <time.h>
 
 #include <net/if.h>
 #include <linux/if_ether.h>
@@ -16,6 +18,55 @@
 
 #include "include/config.h"
 #include "include/bfw.h"
+
+void CheckSocket(int *sockfd);
+int SetupSocket(struct config_map *cfg);
+
+void *TCPCheck(void *data)
+{
+    int *sockfd = data;
+
+    // Check for heartbeat every minute.
+    for (;;)
+    {
+        CheckSocket(sockfd);
+
+        sleep(60);
+    }
+
+    pthread_exit(NULL);
+}
+
+void *TCPHandle(void *data)
+{
+    struct config_map *cfg = data;
+
+    // Setup TCP socket.
+    int sockfd = SetupSocket(cfg);
+
+    // Create thread that checks socket.
+    pthread_t pid;
+
+    pthread_create(&pid, NULL, TCPCheck, (void *)&sockfd);
+
+    // Create a loop and check if we receive a message.
+    for (;;)
+    {
+        unsigned char buffer[MAX_PCKT_LENGTH];
+
+        if (read(sockfd, buffer, sizeof(buffer)) < 1)
+        {
+            continue;
+        }
+
+        // Do whatever with data...
+
+        // Sleep for 500 msecs for prevent possible loop that'd consume CPU.
+        usleep(500);
+    }
+
+    pthread_exit(NULL);
+}
 
 int SetupSocket(struct config_map *cfg)
 {
@@ -68,6 +119,7 @@ void CheckSocket(int *sockfd)
     // Attempt to send a heartbeat (0x60).
     if (send(*sockfd, &msg, 1, 0) < 1)
     {
+        close(*sockfd);
         *sockfd = -1;
 
         return;
@@ -77,6 +129,7 @@ void CheckSocket(int *sockfd)
 
     if (recv(*sockfd, resp, sizeof(resp), 0) < 1)
     {
+        close(*sockfd);
         *sockfd = -1;
     }
 }
