@@ -25,6 +25,7 @@ jsonc:
 	mkdir -p json-c-build
 	cd json-c-build && cmake ../json-c
 	$(MAKE) -C json-c-build
+	$(MAKE) -C json-c-build install
 clean:
 	$(MAKE) -C libbpf/src clean
 	$(MAKE) -C json-c-build clean
