@@ -29,7 +29,7 @@ Here's an example of a config:
 ```
 
 ## Building
-Before building, ensure the `libconfig-dev` package is installed along with necessary building tools such as `llvm`, `clang`, and `libelf-dev`. For Debian/Ubuntu, you can install this with the following as root:
+Before building, ensure the `libconfig-dev` package is installed along with necessary building tools such as `llvm`, `clang`, `libelf-dev`, and `cmake`. For Debian/Ubuntu, you can install this with the following as root:
 
 ```
 apt-get install libconfig-dev
