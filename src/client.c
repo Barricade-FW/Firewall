@@ -123,7 +123,7 @@ int EncryptAndSend(int sockfd, unsigned char *buff, int len, unsigned char *key,
 
     // Copy header (first byte).
     uint8_t *headerpos = tosend;
-    memcpy(headerpos, header, 1);
+    memcpy(headerpos, &header, 1);
 
     // Copy counter to tosend (8 bytes).
     char *sendcounter = tosend + 1;
