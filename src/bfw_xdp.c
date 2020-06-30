@@ -13,7 +13,7 @@
 
 #include "../libbpf/src/bpf_helpers.h"
 
-#include "include/xdpfw.h"
+#include "include/bfw.h"
 
 //#define DEBUG
 #define DOSTATSONBLOCKMAP   // Feel free to comment this out if you don't want the `blocked` entry on the stats map to be incremented every single time a packet is dropped from the source IP being on the blocked map. Commenting this line out should increase performance when blocking malicious traffic.
@@ -55,7 +55,7 @@ struct bpf_map_def SEC("maps") stats_map =
 {
     .type = BPF_MAP_TYPE_ARRAY,
     .key_size = sizeof(uint32_t),
-    .value_size = sizeof(struct xdpfw_stats),
+    .value_size = sizeof(struct bfw_stats),
     .max_entries = 1
 };
 
@@ -63,7 +63,7 @@ struct bpf_map_def SEC("maps") ip_stats_map =
 {
     .type = BPF_MAP_TYPE_LRU_HASH,
     .key_size = sizeof(uint32_t),
-    .value_size = sizeof(struct xdpfw_ip_stats),
+    .value_size = sizeof(struct bfw_ip_stats),
     .max_entries = MAX_TRACK_IPS
 };
 
@@ -118,7 +118,7 @@ int xdp_prog_main(struct xdp_md *ctx)
 
     // Get stats map.
     uint32_t key = 0;
-    struct xdpfw_stats *stats;
+    struct bfw_stats *stats;
 
     stats = bpf_map_lookup_elem(&stats_map, &key);
 
@@ -157,7 +157,7 @@ int xdp_prog_main(struct xdp_md *ctx)
     uint64_t pps = 0;
     uint64_t bps = 0;
 
-    struct xdpfw_ip_stats *ip_stats = bpf_map_lookup_elem(&ip_stats_map, &iph->saddr);
+    struct bfw_ip_stats *ip_stats = bpf_map_lookup_elem(&ip_stats_map, &iph->saddr);
 
     if (ip_stats)
     {
@@ -179,7 +179,7 @@ int xdp_prog_main(struct xdp_md *ctx)
     else
     {
         // Create new entry.
-        struct xdpfw_ip_stats new;
+        struct bfw_ip_stats new;
 
         new.pps = 1;
         new.bps = ctx->data_end - ctx->data;

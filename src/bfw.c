@@ -17,7 +17,7 @@
 #include "../libbpf/src/bpf.h"
 #include "../libbpf/src/libbpf.h"
 
-#include "include/xdpfw.h"
+#include "include/bfw.h"
 #include "include/config.h"
 
 // Command line variables.
@@ -270,7 +270,7 @@ int main(int argc, char *argv[])
     if (help)
     {
         fprintf(stdout, "Usage:\n" \
-            "--config -c => Config file location (default is /etc/xdpfw.conf).\n" \
+            "--config -c => Config file location (default is /etc/bfw/bfw.conf).\n" \
             "--list -l => Print config details including filters (this will exit program after done).\n" \
             "--help -h => Print help menu.\n");
 
@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
     if (configfile == NULL)
     {
         // Assign default.
-        configfile = "/etc/xdpfw/xdpfw.conf";
+        configfile = "/etc/bfw/bfw.conf";
     }
 
     // Initialize config.
@@ -388,7 +388,7 @@ int main(int argc, char *argv[])
     // XDP variables.
     int xdpfd;
     uint32_t xdpflags;
-    char *filename = "/etc/xdpfw/xdpfw_kern.o";
+    char *filename = "/etc/bfw/bfw_xdp.o";
 
     xdpflags = XDP_FLAGS_UPDATE_IF_NOEXIST | XDP_FLAGS_DRV_MODE;
 
@@ -451,7 +451,7 @@ int main(int argc, char *argv[])
         if ((curtime - lastupdated_stats) > 2 && !cfg->nostats)
         {
             uint32_t key = 0;
-            struct xdpfw_stats stats;
+            struct bfw_stats stats;
             
             bpf_map_lookup_elem(statsfd, &key, &stats);
 

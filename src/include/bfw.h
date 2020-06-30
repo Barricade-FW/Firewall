@@ -1,5 +1,5 @@
-#ifndef XDPFW_Header
-#define XDPFW_Header
+#ifndef BWFW_Header
+#define BWFW_Header
 
 #include <inttypes.h>
 
@@ -100,13 +100,13 @@ struct filter
     struct icmpopts icmpopts;
 };
 
-struct xdpfw_stats
+struct bfw_stats
 {
     uint64_t allowed;
     uint64_t blocked;
 };
 
-struct xdpfw_ip_stats
+struct bfw_ip_stats
 {
     uint64_t pps;
     uint64_t bps;

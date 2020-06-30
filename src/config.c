@@ -5,7 +5,7 @@
 
 #include <arpa/inet.h>
 
-#include "include/xdpfw.h"
+#include "include/bfw.h"
 #include "include/config.h"
 
 FILE *file;

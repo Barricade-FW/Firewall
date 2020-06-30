@@ -15,36 +15,7 @@
 #include <sys/socket.h>
 
 #include "include/config.h"
-#include "include/xdpfw.h"
-
-int GetKey(unsigned char *key)
-{
-    // Open key file.
-    FILE *fp = fopen("/etc/xdpfw/key.txt", "rb");
-
-    if (fp == NULL)
-    {
-        fprintf(stderr, "Failed to open /etc/xdpfw/key.txt :: %s\n", strerror(errno));
-
-        return 1;
-    }
-
-    // Set file's position to end of file so we can get the position (AKA size).
-    fseek(fp, 0L, SEEK_END);
-
-    // Get size of key file.
-    size_t sz;
-
-    sz = ftell(fp);
-
-    // Reset position to beginning.
-    fseek(fp, 0L, SEEK_SET);
-
-    // Read key.
-    fread(key, sz, 1, fp);
-    
-    return 0;
-}
+#include "include/bfw.h"
 
 int SetupSocket(struct config_map *cfg)
 {

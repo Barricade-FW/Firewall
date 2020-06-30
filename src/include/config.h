@@ -1,7 +1,7 @@
 #ifndef CONFIG_HEADER
 #define CONFIG_HEADER
 
-#include "xdpfw.h"
+#include "bfw.h"
 struct config_map
 {
     char *interface;
