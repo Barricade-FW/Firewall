@@ -1,10 +1,10 @@
 [Unit]
-Description=XDP Firewall tool.
+Description=Barricade Firewall.
 After=network-online.target
 Requires=network-online.target
 
 [Service]
-ExecStart=/usr/bin/xdpfw
+ExecStart=/usr/bin/bfw
 Restart=always
 
 [Install]
