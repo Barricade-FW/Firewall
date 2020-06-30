@@ -165,7 +165,7 @@ int Decrypt(unsigned char *msg, int len, unsigned char *out, unsigned long long 
     memcpy(header, headerpos, 1);
 
     // Now get counter.
-    uint64_t *counterpos = msg + sizeof(uint8_t);
+    uint64_t *counterpos = (uint64_t *)msg + sizeof(uint8_t);
     memcpy(&counter, counterpos, sizeof(uint64_t));
 
     // Store rest of message as cipher text.
