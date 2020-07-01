@@ -93,7 +93,7 @@ struct filter
     unsigned int do_bps : 1;
     uint64_t bps;
 
-    long blocktime;
+    long int blocktime;
 
     struct tcpopts tcpopts;
     struct udpopts udpopts;
