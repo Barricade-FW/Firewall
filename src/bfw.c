@@ -37,6 +37,7 @@ const struct option opts[] =
 static uint8_t cont = 1;
 static int filtersfd = -1;
 static int statsfd = -1;
+static int timestampfd = -1;
 
 void SignalHndl(int tmp)
 {
@@ -170,6 +171,7 @@ int LoadBPFObj(const char *filename)
 
     filtersfd = FindMap(obj, "filters_map");
     statsfd = FindMap(obj, "stats_map");
+    timestampfd = FindMap(obj, "timestamp_map");
 
     return firstfd;
 }
@@ -423,6 +425,13 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
+    if (timestampfd < 0)
+    {
+        fprintf(stderr, "Error finding 'timestamp_map' BPF map.\n");
+
+        return EXIT_FAILURE;
+    }
+
     // Update BPF maps.
     UpdateBPF(cfg);
 
@@ -438,6 +447,11 @@ int main(int argc, char *argv[])
     {
         // Get current time.
         time_t curtime = time(NULL);
+
+        // Update timestamp map.
+        uint32_t key = 0;
+        
+        bpf_map_update_elem(timestampfd, &key, &curtime, BPF_ANY);
 
         // Check for auto-update.
         if (cfg->updatetime > 0 && (curtime - lastupdated) > cfg->updatetime)

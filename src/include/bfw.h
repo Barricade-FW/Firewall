@@ -93,7 +93,7 @@ struct filter
     unsigned int do_bps : 1;
     uint64_t bps;
 
-    uint64_t blocktime;
+    long blocktime;
 
     struct tcpopts tcpopts;
     struct udpopts udpopts;
@@ -110,7 +110,7 @@ struct bfw_ip_stats
 {
     uint64_t pps;
     uint64_t bps;
-    uint64_t tracking;
+    long int tracking;
 };
 
 void *TCPHandle(void *data);

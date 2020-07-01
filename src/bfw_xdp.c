@@ -71,8 +71,16 @@ struct bpf_map_def SEC("maps") ip_blacklist_map =
 {
     .type = BPF_MAP_TYPE_LRU_HASH,
     .key_size = sizeof(uint32_t),
-    .value_size = sizeof(uint64_t),
+    .value_size = sizeof(long int),
     .max_entries = MAX_TRACK_IPS
+};
+
+struct bpf_map_def SEC("maps") timestamp_map =
+{
+    .type = BPF_MAP_TYPE_ARRAY,
+    .key_size = sizeof(uint32_t),
+    .value_size = sizeof(long int),
+    .max_entries = 1
 };
 
 SEC("xdp_prog")
@@ -99,7 +107,7 @@ int xdp_prog_main(struct xdp_md *ctx)
 
     uint8_t matched = 0;
     uint8_t action = 0;
-    uint64_t blocktime = 1;
+    long blocktime = 1;
 
     // Scan IP header.
     struct iphdr *iph = data + sizeof(struct ethhdr);
@@ -122,10 +130,16 @@ int xdp_prog_main(struct xdp_md *ctx)
 
     stats = bpf_map_lookup_elem(&stats_map, &key);
 
-    uint64_t now = bpf_ktime_get_ns();
+    // Get unix timestamp that is updated within user space.
+    long *now = bpf_map_lookup_elem(&timestamp_map, &key);
+
+    if (now == NULL)
+    {
+        return XDP_ABORTED;
+    }
 
     // Check blacklist map.
-    uint64_t *blocked = bpf_map_lookup_elem(&ip_blacklist_map, &iph->saddr);
+    long *blocked = bpf_map_lookup_elem(&ip_blacklist_map, &iph->saddr);
     
     if (blocked != NULL && *blocked > 0)
     {
@@ -133,7 +147,7 @@ int xdp_prog_main(struct xdp_md *ctx)
             bpf_printk("Checking for blocked packet... Block time %" PRIu64 "\n", *blocked);
         #endif
 
-        if (now > *blocked)
+        if (*now > *blocked)
         {
             // Remove element from map.
             bpf_map_delete_elem(&ip_blacklist_map, &iph->saddr);
@@ -162,11 +176,11 @@ int xdp_prog_main(struct xdp_md *ctx)
     if (ip_stats)
     {
         // Check for reset.
-        if ((now - ip_stats->tracking) > 1000000000)
+        if ((*now - ip_stats->tracking) > 1000000000)
         {
             ip_stats->pps = 0;
             ip_stats->bps = 0;
-            ip_stats->tracking = now;
+            ip_stats->tracking = *now;
         }
 
         // Increment PPS and BPS using built-in functions.
@@ -183,7 +197,7 @@ int xdp_prog_main(struct xdp_md *ctx)
 
         new.pps = 1;
         new.bps = ctx->data_end - ctx->data;
-        new.tracking = now;
+        new.tracking = *now;
 
         pps = new.pps;
         bps = new.bps;
@@ -451,7 +465,7 @@ int xdp_prog_main(struct xdp_md *ctx)
         // Before dropping, update the blacklist map.
         if (blocktime > 0)
         {
-            uint64_t newtime = now + (blocktime * 1000000000);
+            long newtime = *now + blocktime;
 
             bpf_map_update_elem(&ip_blacklist_map, &iph->saddr, &newtime, BPF_ANY);
         }
