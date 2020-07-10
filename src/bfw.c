@@ -117,11 +117,6 @@ int UpdateConfig(struct config_map *cfg, char *configfile)
 
     SetConfigDefaults(cfg);
 
-    for (uint16_t i = 0; i < MAX_FILTERS; i++)
-    {
-        cfg->filters[i] = (struct filter) {0};
-    }
-
     // Read config and check for errors.
     if (ReadConfig(cfg) != 0)
     {
