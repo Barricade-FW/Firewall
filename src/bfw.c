@@ -491,6 +491,9 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
+    // Close config file.
+    CloseConfig();
+
     // Free config.
     free(cfg);
 
