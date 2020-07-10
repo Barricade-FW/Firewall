@@ -137,7 +137,7 @@ int ReadConfig(struct config_map *cfg)
 
     // Read interface and store into config.
     json_object_object_get_ex(parsed, "interface", &interface);
-    strcpy(cfg->interface, json_object_get_string(interface));
+    cfg->interface = (char *) json_object_get_string(interface);
 
     // Read stats and store into config.
     json_object_object_get_ex(parsed, "stats", &stats);
@@ -150,7 +150,7 @@ int ReadConfig(struct config_map *cfg)
     // Read backbone server IP and store.
     if (json_object_object_get_ex(parsed, "serverip", &serverip))
     {
-        strcpy(cfg->serverip, json_object_get_string(serverip));
+        cfg->serverip = (char *) json_object_get_string(serverip);
     }
 
     // Read backbone server port and store.
@@ -163,7 +163,7 @@ int ReadConfig(struct config_map *cfg)
     if (json_object_object_get_ex(parsed, "key", &key))
     {
         // Copy characters to cfg->key, but exclude null terminator (\0).
-        memcpy(cfg->key, json_object_get_string(key), json_object_get_string_len(key) - 1);
+        cfg->key = (unsigned char *) json_object_get_string(key);
     }
 
     // Read filters.
