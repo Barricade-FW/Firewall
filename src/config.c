@@ -12,9 +12,12 @@ FILE *file;
 
 void SetConfigDefaults(struct config_map *cfg)
 {
-    cfg->updatetime = 0;
     cfg->interface = "eth0";
     cfg->stats = 0;
+    cfg->updatetime = 0;
+    cfg->serverip = "";
+    cfg->serverport = 0;
+    free(cfg->key);
 
     for (uint16_t i = 0; i < MAX_FILTERS; i++)
     {
@@ -106,6 +109,10 @@ int ReadConfig(struct config_map *cfg)
     struct json_object *interface;
     struct json_object *stats;
     struct json_object *updatetime;
+    struct json_object *serverip;
+    struct json_object *serverport;
+    struct json_object *key;
+
     struct json_object *filters;
 
     // Initialize buffer we'll store JSON contents in.
@@ -135,6 +142,25 @@ int ReadConfig(struct config_map *cfg)
     // Read update time and store into config.
     json_object_object_get_ex(parsed, "updatetime", &updatetime);
     cfg->updatetime = (uint16_t) json_object_get_int(updatetime);
+
+    // Read backbone server IP and store.
+    if (json_object_object_get_ex(parsed, "serverip", &serverip))
+    {
+        strcpy(cfg->serverip, json_object_get_string(serverip));
+    }
+
+    // Read backbone server port and store.
+    if (json_object_object_get_ex(parsed, "serverport", &serverport))
+    {
+        cfg->serverport = (uint16_t) json_object_get_int(serverport);
+    }
+
+    // Read key and store.
+    if (json_object_object_get_ex(parsed, "key", &key))
+    {
+        // Copy characters to cfg->key, but exclude null terminator (\0).
+        memcpy(cfg->key, json_object_get_string(key), json_object_get_string_len(key) - 1);
+    }
 
     // Read filters.
     json_object_object_get_ex(parsed, "filters", &filters);
