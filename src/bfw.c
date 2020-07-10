@@ -348,8 +348,8 @@ int main(int argc, char *argv[])
             fprintf(stdout, "Min TTL => %" PRIu8 "\n", cfg->filters[i].min_ttl);
             fprintf(stdout, "TOS => %" PRIu8 "\n", cfg->filters[i].tos);
             fprintf(stdout, "PPS => %" PRIu64 "\n", cfg->filters[i].pps);
-            fprintf(stdout, "BPS => %" PRIu64 "\n\n", cfg->filters[i].bps);
-            fprintf(stdout, "Block Time => %" PRIu64 "\n\n", cfg->filters[i].blocktime);
+            fprintf(stdout, "BPS => %" PRIu64 "\n", cfg->filters[i].bps);
+            fprintf(stdout, "Block Time => %ld\n\n", cfg->filters[i].blocktime);
 
             // TCP options.
             fprintf(stdout, "TCP Enabled => %" PRIu8 "\n", cfg->filters[i].tcpopts.enabled);
