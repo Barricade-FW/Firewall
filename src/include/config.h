@@ -9,7 +9,6 @@ struct config_map
     unsigned char *key;
     uint16_t serverport;
     uint16_t updatetime;
-    unsigned int usecache : 1;
     unsigned int nostats : 1;
     struct filter filters[MAX_FILTERS];
 };
