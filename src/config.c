@@ -14,7 +14,7 @@ void SetConfigDefaults(struct config_map *cfg)
 {
     cfg->updatetime = 0;
     cfg->interface = "eth0";
-    cfg->nostats = 0;
+    cfg->stats = 0;
 
     for (uint16_t i = 0; i < MAX_FILTERS; i++)
     {
@@ -130,7 +130,7 @@ int ReadConfig(struct config_map *cfg)
 
     // Read stats and store into config.
     json_object_object_get_ex(parsed, "stats", &stats);
-    cfg->nostats = json_object_get_boolean(stats) ? 1 : 0;
+    cfg->stats = json_object_get_boolean(stats) ? 1 : 0;
 
     // Read update time and store into config.
     json_object_object_get_ex(parsed, "updatetime", &updatetime);

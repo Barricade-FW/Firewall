@@ -467,7 +467,7 @@ int main(int argc, char *argv[])
         }
 
         // Update stats.
-        if ((curtime - lastupdated_stats) > 2 && !cfg->nostats)
+        if ((curtime - lastupdated_stats) > 2 && cfg->stats)
         {
             uint32_t key = 0;
             struct bfw_stats stats;
