@@ -315,6 +315,7 @@ int main(int argc, char *argv[])
         fprintf(stdout, "Details:\n");
         fprintf(stdout, "Interface Name => %s\n", cfg->interface);
         fprintf(stdout, "Update Time => %" PRIu16 "\n", cfg->updatetime);
+        fprintf(stdout, "Stats: %d\n", cfg->stats);
 
         for (uint16_t i = 0; i < MAX_FILTERS; i++)
         {
