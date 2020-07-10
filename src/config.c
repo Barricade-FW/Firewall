@@ -14,14 +14,9 @@ void SetConfigDefaults(struct config_map *cfg)
 {
     cfg->interface = "eth0";
     cfg->stats = 0;
-    cfg->updatetime = 0;
+    cfg->updatetime = 15;
     cfg->serverip = "";
     cfg->serverport = 0;
-
-    if (cfg->key != NULL)
-    {
-        free(cfg->key);
-    }
 
     for (uint16_t i = 0; i < MAX_FILTERS; i++)
     {
@@ -306,7 +301,7 @@ int ReadConfig(struct config_map *cfg)
 
         if (json_object_object_get_ex(filter, "blocktime", &blocktime))
         {
-            cfg->filters[i].blocktime = (long) json_object_get_int(blocktime);
+            cfg->filters[i].blocktime = (long int) json_object_get_int(blocktime);
         }
 
         // Get and store TCP enabled.
