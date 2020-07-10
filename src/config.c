@@ -139,16 +139,22 @@ int ReadConfig(struct config_map *cfg)
     }
 
     // Read interface and store into config.
-    json_object_object_get_ex(parsed, "interface", &interface);
-    cfg->interface = (char *) json_object_get_string(interface);
+    if (json_object_object_get_ex(parsed, "interface", &interface))
+    {
+        cfg->interface = (char *) json_object_get_string(interface);
+    }
 
     // Read stats and store into config.
-    json_object_object_get_ex(parsed, "stats", &stats);
-    cfg->stats = json_object_get_boolean(stats) ? 1 : 0;
+    if (json_object_object_get_ex(parsed, "stats", &stats))
+    {
+        cfg->stats = json_object_get_boolean(stats) ? 1 : 0;
+    }
 
     // Read update time and store into config.
-    json_object_object_get_ex(parsed, "updatetime", &updatetime);
-    cfg->updatetime = (uint16_t) json_object_get_int(updatetime);
+    if (json_object_object_get_ex(parsed, "updatetime", &updatetime))
+    {
+        cfg->updatetime = (uint16_t) json_object_get_int(updatetime);
+    }
 
     // Read backbone server IP and store.
     if (json_object_object_get_ex(parsed, "serverip", &serverip))
