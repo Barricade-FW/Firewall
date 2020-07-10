@@ -17,4 +17,5 @@ struct config_map
 void SetConfigDefaults(struct config_map *cfg);
 int OpenConfig(const char *filename);
 int ReadConfig(struct config_map *cfg);
+void CloseConfig();
 #endif
