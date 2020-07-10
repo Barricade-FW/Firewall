@@ -87,6 +87,11 @@ int OpenConfig(const char *filename)
     return 0;
 }
 
+void CloseConfig()
+{
+    fclose(file);
+}
+
 int ReadConfig(struct config_map *cfg)
 {
     // Not sure why this would be set to NULL after checking for it in OpenConfig(), but just for safety.
