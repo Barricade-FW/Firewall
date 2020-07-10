@@ -316,6 +316,8 @@ int main(int argc, char *argv[])
         fprintf(stdout, "Interface Name => %s\n", cfg->interface);
         fprintf(stdout, "Update Time => %" PRIu16 "\n", cfg->updatetime);
         fprintf(stdout, "Stats: %d\n", cfg->stats);
+        fprintf(stdout, "Backbone IP: %s\n", cfg->serverip);
+        fprintf(stdout, "Backbone Port: %d\n\n", cfg->serverport);
 
         for (uint16_t i = 0; i < MAX_FILTERS; i++)
         {
