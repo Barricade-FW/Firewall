@@ -135,6 +135,14 @@ int ReadConfig(struct config_map *cfg)
     // Parse JSON buffer.
     parsed = json_tokener_parse(buffer);
 
+    // Check if JSON data is valid.
+    if (parsed == NULL)
+    {
+        fprintf(stderr, "Error reading config file :: Error parsing JSON data.\n");
+
+        return 1;
+    }
+
     // Read interface and store into config.
     json_object_object_get_ex(parsed, "interface", &interface);
     cfg->interface = (char *) json_object_get_string(interface);
