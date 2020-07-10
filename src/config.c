@@ -17,7 +17,11 @@ void SetConfigDefaults(struct config_map *cfg)
     cfg->updatetime = 0;
     cfg->serverip = "";
     cfg->serverport = 0;
-    free(cfg->key);
+
+    if (cfg->key != NULL)
+    {
+        free(cfg->key);
+    }
 
     for (uint16_t i = 0; i < MAX_FILTERS; i++)
     {
