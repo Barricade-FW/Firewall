@@ -1,4 +1,4 @@
-# Barricade Firewall (NOT FINISHED)
+# Barricade Firewall
 ## Description
 An XDP Firewall that optionally connects to a backbone running [this](https://github.com/Barricade-FW/Web-Server) application.
 
