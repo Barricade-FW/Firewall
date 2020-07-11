@@ -17,16 +17,20 @@ The following command line arguments are supported:
 * `key` => Base64 key generated from backbone.
 
 ## Configuration Example
-Here's an example of a config:
+Here's an example of a config for starting up the XDP firewall for the first time:
 
 ```
 {
+    "interface": "ens18",
     "serverip": "127.0.0.1",
     "serverport": 3020,
-    "usecache": false,
     "key": "VGhpc2lzanVzdGFzaW1wbGV0ZXN0Zm9yYmFzZTY0ZW5jcnlwdGlvbg=="
 }
 ```
+
+Assuming the connection to the backbone is established and the key is correct, it will retrieve filters and additional options from the backbone.
+
+**Note** - The backbone will hold the *entire* config. This means the `interface`, `serverip`, `serverport`, and `key` items will be replaced with the values retrieved from the backbone.
 
 ## Building
 Before building, ensure the `libconfig-dev` package is installed along with necessary building tools such as `llvm`, `clang`, `libelf-dev`, and `cmake`. For Debian/Ubuntu, you can install this with the following as root:
