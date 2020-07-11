@@ -6,7 +6,7 @@ libbpf_static_objects += libbpf/src/staticobjs/bpf.o libbpf/src/staticobjs/btf.o
 libbpf_static_objects += libbpf/src/staticobjs/libbpf.o libbpf/src/staticobjs/netlink.o libbpf/src/staticobjs/nlattr.o libbpf/src/staticobjs/str_error.o
 libbpf_static_objects += libbpf/src/staticobjs/hashmap.o libbpf/src/staticobjs/bpf_prog_linfo.o
 
-LDFLAGS += -lconfig -lelf -lz -lsodium -lpthread
+LDFLAGS += -lelf -lz -lsodium -lpthread
 
 JSON_C_DIR=json-c-build
 
