@@ -19,6 +19,11 @@ The following command line arguments are supported:
 
 **Note** - The backbone will hold the *entire* config. This means the `interface`, `serverip`, `serverport`, and `key` items will be replaced with the values retrieved from the backbone.
 
+## Requirements
+* [Libsodium](https://libsodium.gitbook.io/) - You must install Libsodium in order to build and use this project. You can find an installation guide [here](https://libsodium.gitbook.io/doc/installation#compilation-on-unix-like-systems).
+
+**Note** - I will look into installing Libsodium automatically via the `Makefile` in the future if it's possible.
+
 ## Startup Configuration Example
 Here's an example of a config for starting up the XDP firewall for the first time and connecting to the backbone to retrieve all settings:
 
