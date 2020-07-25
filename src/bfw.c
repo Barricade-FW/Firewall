@@ -437,9 +437,9 @@ int main(int argc, char *argv[])
     signal(SIGINT, SignalHndl);
 
     // Spawn thread to handle TCP.
-    pthread_t pid;
+    //pthread_t pid;
 
-    pthread_create(&pid, NULL, TCPHandle, (void *)cfg);
+    //pthread_create(&pid, NULL, TCPHandle, (void *)cfg);
 
     while (cont)
     {
