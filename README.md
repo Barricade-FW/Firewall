@@ -19,6 +19,8 @@ The following command line arguments are supported:
 
 **Note** - The backbone will hold the *entire* config. This means the `interface`, `serverip`, `serverport`, and `key` items will be replaced with the values retrieved from the backbone.
 
+**Note** - As of right now, you can specify up to 55 maximum filters. This is due to the BPF map's max entries limitation while using `BPF_MAP_TYPE_ARRAY`. I don't believe we'd be able to use a per-CPU map for this as well because if we do, I don't believe we'd be able to reliably read the filters within the XDP program. If you want more filters, you could try using a hash map (changing the filter map's type to `BPF_MAP_TYPE_HASH`), but keep in mind lookups on the filters will be slower.
+
 ## Requirements
 * [Libsodium](https://libsodium.gitbook.io/) - You must install Libsodium in order to build and use this project. You can find an installation guide [here](https://libsodium.gitbook.io/doc/installation#compilation-on-unix-like-systems).
 
