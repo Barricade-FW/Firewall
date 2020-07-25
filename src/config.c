@@ -175,11 +175,14 @@ int ReadConfig(struct config_map *cfg)
         cfg->key = (unsigned char *) json_object_get_string(key);
     }
 
-    // Read filters.
-    json_object_object_get_ex(parsed, "filters", &filters);
+    size_t filterslen = 0;
 
-    // Get filters length.
-    size_t filterslen = json_object_array_length(filters);
+    // Read filters.
+    if (json_object_object_get_ex(parsed, "filters", &filters))
+    {
+        // Get filters length.
+        filterslen = json_object_array_length(filters);
+    }
 
     // Loop through each filter.
     struct json_object *filter;
